@@ -33,31 +33,12 @@ public class JobApplicationController {
 
     @GetMapping
     public List<JobApplication> getApplications(
-        @RequestParam(required = false) JobStatus status, 
-        @RequestParam(required = false) String company, @RequestParam(required = false) String sort) {
+        @RequestParam(required = false) JobStatus status,
+        @RequestParam(required = false) String company,
+        @RequestParam(required = false) String sort) {
 
-        if (status != null && company != null) {
-            return service.findByCompanyAndStatus(company, status);
-        }
-
-        if (status != null && sort != null) {
-            return service.findByStatusSorted(status, sort);
-        }
-
-        if (status != null) {
-            return service.findByStatus(status);
-        }
-
-        if (company != null) {
-            return service.findByCompany(company);
-        }
-
-        if (sort != null) {
-            return service.getAllApplicationsSorted(sort);
-        }
-
-        return service.getAllApplications();
-    }
+    return service.getApplications(status, company, sort);
+}
 
     @PostMapping
     public JobApplication createApplication(
@@ -65,7 +46,7 @@ public class JobApplicationController {
         return service.save(jobApplication);
     }
     @GetMapping("/{id}")
-public JobApplication getApplication(@PathVariable Long id) {
+    public JobApplication getApplication(@PathVariable Long id) {
     return service.findById(id);
 }
     @DeleteMapping("/{id}")

@@ -5,9 +5,9 @@ import com.chayse.jobtracker.model.JobApplication;
 import com.chayse.jobtracker.repository.JobApplicationRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.bind.annotation.RequestParam;
 import com.chayse.jobtracker.model.JobStatus;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 @Service
 public class JobApplicationService {
@@ -21,21 +21,30 @@ public class JobApplicationService {
     public List<JobApplication> getAllApplications() {
         return repository.findAll();
     }
-    public List<JobApplication> getAllApplicationsSorted(String direction) {
-        if (direction.equalsIgnoreCase("ASC")) {
-            return repository.findAll(Sort.by(Sort.Direction.ASC, "dateApplied"));
-        } else {
-            return repository.findAll(Sort.by(Sort.Direction.DESC, "dateApplied"));
+    public List<JobApplication> getApplications(
+        JobStatus status,
+        String company,
+        String sort) {
+
+            Specification<JobApplication> spec = Specification.unrestricted();
+            if (status != null) {
+                spec = spec.and(hasStatus(status));
+            }
+            if (company != null) {
+                spec = spec.and(companyContains(company));
+            }
+            Sort sorting = Sort.unsorted();
+
+            if (sort != null) {
+                if (sort.equalsIgnoreCase("ASC")) {
+                    sorting = Sort.by(Sort.Direction.ASC, "dateApplied");
+                } else {
+                    sorting = Sort.by(Sort.Direction.DESC, "dateApplied");
+                }
+            }
+    
+            return repository.findAll(spec, sorting);
         }
-    }
-    public List<JobApplication> findByStatusSorted(
-        JobStatus status, String direction) {
-         if (direction.equalsIgnoreCase("ASC")) {
-            return repository.findByStatus(status, Sort.by(Sort.Direction.ASC, "dateApplied"));
-        } else {
-            return repository.findByStatus(status, Sort.by(Sort.Direction.DESC, "dateApplied"));
-        }
-     }
 
     public JobApplication save(JobApplication jobApplication) {
         return repository.save(jobApplication);
@@ -76,15 +85,15 @@ public class JobApplicationService {
     return repository.save(existing);
     }
 
-    public List<JobApplication> findByStatus(JobStatus status) {
-        return repository.findByStatus(status);
+    private Specification<JobApplication> hasStatus(JobStatus status) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("status"), status);
     }
-
-    public List<JobApplication> findByCompany(String company) {
-        return repository.findByCompanyContainingIgnoreCase(company);
-    }
-
-    public List<JobApplication> findByCompanyAndStatus(String company, JobStatus status) {
-        return repository.findByCompanyContainingIgnoreCaseAndStatus(company, status);
+    private Specification<JobApplication> companyContains(String company) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("company")),
+                        "%" + company.toLowerCase() + "%"
+                );
     }
 }
