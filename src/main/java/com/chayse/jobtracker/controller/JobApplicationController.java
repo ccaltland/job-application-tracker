@@ -1,5 +1,5 @@
 // ./mvnw clean package
-// ./mvn spring-boot:run
+// ./mvnw spring-boot:run
 package com.chayse.jobtracker.controller;
 
 import java.util.List;
@@ -33,17 +33,27 @@ public class JobApplicationController {
 
     @GetMapping
     public List<JobApplication> getApplications(
-        @RequestParam(required = false) JobStatus status, @RequestParam(required = false) String company) {
+        @RequestParam(required = false) JobStatus status, 
+        @RequestParam(required = false) String company, @RequestParam(required = false) String sort) {
 
         if (status != null && company != null) {
             return service.findByCompanyAndStatus(company, status);
         }
 
+        if (status != null && sort != null) {
+            return service.findByStatusSorted(status, sort);
+        }
+
         if (status != null) {
             return service.findByStatus(status);
         }
+
         if (company != null) {
             return service.findByCompany(company);
+        }
+
+        if (sort != null) {
+            return service.getAllApplicationsSorted(sort);
         }
 
         return service.getAllApplications();

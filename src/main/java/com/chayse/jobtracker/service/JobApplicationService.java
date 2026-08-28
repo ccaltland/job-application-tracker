@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.chayse.jobtracker.model.JobStatus;
+import org.springframework.data.domain.Sort;
 
 @Service
 public class JobApplicationService {
@@ -20,6 +21,21 @@ public class JobApplicationService {
     public List<JobApplication> getAllApplications() {
         return repository.findAll();
     }
+    public List<JobApplication> getAllApplicationsSorted(String direction) {
+        if (direction.equalsIgnoreCase("ASC")) {
+            return repository.findAll(Sort.by(Sort.Direction.ASC, "dateApplied"));
+        } else {
+            return repository.findAll(Sort.by(Sort.Direction.DESC, "dateApplied"));
+        }
+    }
+    public List<JobApplication> findByStatusSorted(
+        JobStatus status, String direction) {
+         if (direction.equalsIgnoreCase("ASC")) {
+            return repository.findByStatus(status, Sort.by(Sort.Direction.ASC, "dateApplied"));
+        } else {
+            return repository.findByStatus(status, Sort.by(Sort.Direction.DESC, "dateApplied"));
+        }
+     }
 
     public JobApplication save(JobApplication jobApplication) {
         return repository.save(jobApplication);
