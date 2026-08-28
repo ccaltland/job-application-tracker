@@ -5,5 +5,10 @@ import java.util.List;
 import com.chayse.jobtracker.model.JobStatus;
 
 public interface JobApplicationRepository extends JpaRepository<JobApplication, Long> {
+
     List<JobApplication> findByStatus(JobStatus status);
+
+    List<JobApplication> findByCompanyContainingIgnoreCase(String company);
+
+    List<JobApplication> findByCompanyContainingIgnoreCaseAndStatus(String company, JobStatus status);
 }

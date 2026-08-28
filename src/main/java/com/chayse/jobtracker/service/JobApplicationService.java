@@ -59,7 +59,16 @@ public class JobApplicationService {
 
     return repository.save(existing);
     }
+
     public List<JobApplication> findByStatus(JobStatus status) {
         return repository.findByStatus(status);
+    }
+
+    public List<JobApplication> findByCompany(String company) {
+        return repository.findByCompanyContainingIgnoreCase(company);
+    }
+
+    public List<JobApplication> findByCompanyAndStatus(String company, JobStatus status) {
+        return repository.findByCompanyContainingIgnoreCaseAndStatus(company, status);
     }
 }
