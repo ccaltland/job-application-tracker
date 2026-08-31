@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,9 +21,11 @@ import com.chayse.jobtracker.model.JobApplication;
 import com.chayse.jobtracker.service.JobApplicationService;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.chayse.jobtracker.model.JobStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
 @RequestMapping("/applications")
+@CrossOrigin(origins = "http://localhost:5173")
 public class JobApplicationController {
 
     private final JobApplicationService service;

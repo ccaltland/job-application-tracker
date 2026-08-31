@@ -1,0 +1,229 @@
+import { useEffect, useState } from 'react'
+import './App.css'
+
+function App() {
+  const [applications, setApplications] = useState([])
+  const [editingId, setEditingId] = useState(null)
+  const [statusFilter, setStatusFilter] = useState('')
+  const [companyFilter, setCompanyFilter] = useState('')
+  const [sortOrder, setSortOrder] = useState('')
+
+  const [formData, setFormData] = useState({
+    company: '',
+    position: '',
+    status: 'APPLIED',
+    dateApplied: '',
+    notes: ''
+  })
+
+
+  useEffect(() => {
+    const params = new URLSearchParams()
+
+    if (statusFilter) {
+      params.append('status', statusFilter)
+    }
+
+    if (companyFilter) {
+      params.append('company', companyFilter)
+    }
+    if (sortOrder) {
+      params.append('sort', sortOrder)
+    }
+
+    const url = `http://localhost:8080/applications?${params.toString()}`
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        setApplications(data)
+      })
+  }, [statusFilter, companyFilter, sortOrder])
+
+  function handleChange(event) {
+    const { name, value } = event.target
+
+    setFormData({
+      ...formData,
+      [name]: value
+    })
+  }
+  function handleSubmit(event) {
+    event.preventDefault()
+    const url = editingId
+      ? `http://localhost:8080/applications/${editingId}`
+      : 'http://localhost:8080/applications'
+
+    const method = editingId ? 'PUT' : 'POST'
+
+    fetch(url, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to add application')
+        }
+
+        return response.json()
+      })
+      .then(savedApplication => {
+        if (editingId) {
+          setApplications(
+            applications.map(application =>
+              application.id === editingId
+                ? savedApplication
+                : application
+            )
+          )
+        } else {
+          setApplications([...applications, savedApplication])
+        }
+
+        setFormData({
+          company: '',
+          position: '',
+          status: 'APPLIED',
+          dateApplied: '',
+          notes: ''
+        })
+
+        setEditingId(null)
+      })
+      .catch(error => {
+        console.error(error)
+      })
+  }
+  function handleDelete(id) {
+    fetch(`http://localhost:8080/applications/${id}`, {
+      method: 'DELETE'
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to delete application')
+        }
+
+        setApplications(
+          applications.filter(application => application.id !== id)
+        )
+      })
+      .catch(error => {
+        console.error(error)
+      })
+  }
+  function handleEdit(application) {
+    setEditingId(application.id)
+
+    setFormData({
+      company: application.company,
+      position: application.position,
+      status: application.status,
+      dateApplied: application.dateApplied,
+      notes: application.notes || ''
+    })
+  }
+  console.log(statusFilter)
+
+  return (
+    <div>
+      <h1>Job Application Tracker</h1>
+      <label>
+        Filter by status:
+        <select
+          value={statusFilter}
+          onChange={event => setStatusFilter(event.target.value)}
+        >
+          <option value="">All</option>
+          <option value="APPLIED">Applied</option>
+          <option value="INTERVIEW">Interview</option>
+          <option value="OFFER">Offer</option>
+          <option value="REJECTED">Rejected</option>
+          <option value="WITHDRAWN">Withdrawn</option>
+        </select>
+      </label>
+      <select
+        value={sortOrder}
+        onChange={event => setSortOrder(event.target.value)}
+      >
+        <option value="">Default order</option>
+        <option value="DESC">Newest first</option>
+        <option value="ASC">Oldest first</option>
+      </select>
+      <input
+        type="text"
+        placeholder="Search by company"
+        value={companyFilter}
+        onChange={event => setCompanyFilter(event.target.value)}
+      />
+
+      {applications.map(application => (
+        <div key={application.id}>
+          <h2>{application.company}</h2>
+          <p>{application.position}</p>
+          <p>{application.status}</p>
+          <p>{application.dateApplied}</p>
+          <button onClick={() => handleDelete(application.id)}>
+            Delete
+          </button>
+          <button onClick={() => handleEdit(application)}>
+            Edit
+          </button>
+        </div>
+      ))}
+
+      <h2>{editingId ? 'Edit Application' : 'Add Application'}</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="company"
+          placeholder="Company"
+          value={formData.company}
+          onChange={handleChange}
+        />
+
+        <input
+          type="text"
+          name="position"
+          placeholder="Position"
+          value={formData.position}
+          onChange={handleChange}
+        />
+
+        <select
+          name="status"
+          value={formData.status}
+          onChange={handleChange}
+        >
+          <option value="APPLIED">Applied</option>
+          <option value="INTERVIEW">Interview</option>
+          <option value="OFFER">Offer</option>
+          <option value="REJECTED">Rejected</option>
+          <option value="WITHDRAWN">Withdrawn</option>
+        </select>
+
+        <input
+          type="date"
+          name="dateApplied"
+          value={formData.dateApplied}
+          onChange={handleChange}
+        />
+
+        <textarea
+          name="notes"
+          placeholder="Notes"
+          value={formData.notes}
+          onChange={handleChange}
+        />
+        <button type="submit">
+          {editingId ? 'Save Changes' : 'Add Application'}
+        </button>
+      </form>
+
+    </div>
+  )
+}
+
+export default App
