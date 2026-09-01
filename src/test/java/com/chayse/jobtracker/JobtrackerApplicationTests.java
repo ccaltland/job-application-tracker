@@ -24,54 +24,54 @@ import java.util.List;
 @AutoConfigureMockMvc
 class JobtrackerApplicationTests {
 
-    @Autowired
-    private MockMvc mockMvc;
+	@Autowired
+	private MockMvc mockMvc;
 
-    @Autowired
-    private JobApplicationRepository repository;
+	@Autowired
+	private JobApplicationRepository repository;
 
-    @BeforeEach
-    void setUp() {
-        repository.deleteAll();
-    }
+	@BeforeEach
+	void setUp() {
+		repository.deleteAll();
+	}
 
-	   // 1. CREATE
-    @Test
-    void shouldCreateApplication() throws Exception {
-        String json = """
-            {
-                "company": "Epic",
-                "position": "Infrastructure Engineer",
-                "status": "APPLIED",
-                "dateApplied": "2026-08-27",
-                "notes": "Completed assessment"
-            }
-            """;
+	// 1. CREATE
+	@Test
+	void shouldCreateApplication() throws Exception {
+		String json = """
+				{
+				    "company": "Epic",
+				    "position": "Infrastructure Engineer",
+				    "status": "APPLIED",
+				    "dateApplied": "2026-08-27",
+				    "notes": "Completed assessment"
+				}
+				""";
 
-        mockMvc.perform(post("/applications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.company").value("Epic"))
-                .andExpect(jsonPath("$.status").value("APPLIED"));
-    }
+		mockMvc.perform(post("/applications")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(json))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.company").value("Epic"))
+				.andExpect(jsonPath("$.status").value("APPLIED"));
+	}
 
-    // 2. VALIDATION
-    @Test
-    void shouldRejectInvalidApplication() throws Exception {
-        String json = """
-            {
-                "company": "",
-                "position": "",
-                "status": null
-            }
-            """;
+	// 2. VALIDATION
+	@Test
+	void shouldRejectInvalidApplication() throws Exception {
+		String json = """
+				{
+				    "company": "",
+				    "position": "",
+				    "status": null
+				}
+				""";
 
-        mockMvc.perform(post("/applications")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().isBadRequest());
-    }
+		mockMvc.perform(post("/applications")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(json))
+				.andExpect(status().isBadRequest());
+	}
 
 	// 3. NOT FOUND
 	@Test
@@ -108,10 +108,11 @@ class JobtrackerApplicationTests {
 				.param("company", "Epic")
 				.param("status", "APPLIED"))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.length()").value(1))		
+				.andExpect(jsonPath("$.length()").value(1))
 				.andExpect(jsonPath("$[0].company").value("Epic"))
 				.andExpect(jsonPath("$[0].status").value("APPLIED"));
 	}
+
 	// 5. SORTING
 	@Test
 	void shouldSortByDateDescending() throws Exception {
@@ -137,6 +138,7 @@ class JobtrackerApplicationTests {
 				.andExpect(jsonPath("$[0].dateApplied").value("2026-08-27"))
 				.andExpect(jsonPath("$[1].dateApplied").value("2026-08-20"));
 	}
+
 	// 6. DELETE
 	@Test
 	void shouldDeleteApplication() throws Exception {
@@ -151,7 +153,7 @@ class JobtrackerApplicationTests {
 		Long id = saved.getId();
 
 		mockMvc.perform(delete("/applications/" + id))
-				.andExpect(status().isOk());		
+				.andExpect(status().isOk());
 
 		mockMvc.perform(get("/applications/" + id))
 				.andExpect(status().isNotFound());

@@ -128,101 +128,118 @@ function App() {
   console.log(statusFilter)
 
   return (
-    <div>
-      <h1>Job Application Tracker</h1>
-      <label>
-        Filter by status:
+    <div classNAme="app">
+      <h1 className="page-title">Job Application Tracker</h1>
+      <p className="subtitle">Track and manage your job search</p>
+      <div className="filter-bar">
+        <label>
+          <select
+            value={statusFilter}
+            onChange={event => setStatusFilter(event.target.value)}
+          >
+            <option value="">All</option>
+            <option value="APPLIED">Applied</option>
+            <option value="INTERVIEW">Interview</option>
+            <option value="OFFER">Offer</option>
+            <option value="REJECTED">Rejected</option>
+            <option value="WITHDRAWN">Withdrawn</option>
+          </select>
+        </label>
         <select
-          value={statusFilter}
-          onChange={event => setStatusFilter(event.target.value)}
+          value={sortOrder}
+          onChange={event => setSortOrder(event.target.value)}
         >
-          <option value="">All</option>
-          <option value="APPLIED">Applied</option>
-          <option value="INTERVIEW">Interview</option>
-          <option value="OFFER">Offer</option>
-          <option value="REJECTED">Rejected</option>
-          <option value="WITHDRAWN">Withdrawn</option>
+          <option value="">Default order</option>
+          <option value="DESC">Newest first</option>
+          <option value="ASC">Oldest first</option>
         </select>
-      </label>
-      <select
-        value={sortOrder}
-        onChange={event => setSortOrder(event.target.value)}
-      >
-        <option value="">Default order</option>
-        <option value="DESC">Newest first</option>
-        <option value="ASC">Oldest first</option>
-      </select>
-      <input
-        type="text"
-        placeholder="Search by company"
-        value={companyFilter}
-        onChange={event => setCompanyFilter(event.target.value)}
-      />
-
-      {applications.map(application => (
-        <div key={application.id}>
-          <h2>{application.company}</h2>
-          <p>{application.position}</p>
-          <p>{application.status}</p>
-          <p>{application.dateApplied}</p>
-          <button onClick={() => handleDelete(application.id)}>
-            Delete
-          </button>
-          <button onClick={() => handleEdit(application)}>
-            Edit
-          </button>
-        </div>
-      ))}
-
-      <h2>{editingId ? 'Edit Application' : 'Add Application'}</h2>
-      <form onSubmit={handleSubmit}>
         <input
           type="text"
-          name="company"
-          placeholder="Company"
-          value={formData.company}
-          onChange={handleChange}
+          placeholder="Search by company"
+          value={companyFilter}
+          onChange={event => setCompanyFilter(event.target.value)}
         />
+      </div>
+      <div className="applications-grid">
+        {applications.map(application => (
+          <div className="application-card" key={application.id}>
+            <h2>{application.company}</h2>
+            <p>{application.position}</p>
+            <p>Status: {' '} <span className={`status-badge ${application.status.toLowerCase()}`}>
+  {application.status}
+</span></p>
+            <p><strong>Applied: </strong>{application.dateApplied}</p>
+            <div className = "card-actions">
+            <button className="edit-button" onClick={() => handleEdit(application)}>
+              Edit
+            </button>
+            <button className = "delete-button" onClick={() => handleDelete(application.id)}>
+              Delete
+            </button>
+            </div>
+          </div>
+        ))}
+      </div>
 
-        <input
-          type="text"
-          name="position"
-          placeholder="Position"
-          value={formData.position}
-          onChange={handleChange}
-        />
 
-        <select
-          name="status"
-          value={formData.status}
-          onChange={handleChange}
-        >
-          <option value="APPLIED">Applied</option>
-          <option value="INTERVIEW">Interview</option>
-          <option value="OFFER">Offer</option>
-          <option value="REJECTED">Rejected</option>
-          <option value="WITHDRAWN">Withdrawn</option>
-        </select>
-
-        <input
-          type="date"
-          name="dateApplied"
-          value={formData.dateApplied}
-          onChange={handleChange}
-        />
-
-        <textarea
-          name="notes"
-          placeholder="Notes"
-          value={formData.notes}
-          onChange={handleChange}
-        />
-        <button type="submit">
-          {editingId ? 'Save Changes' : 'Add Application'}
-        </button>
+      <h2 className="form-title">{editingId ? 'Edit Application' : 'Add Application'}</h2>
+      <form onSubmit={handleSubmit} className="application-form">
+      <div className="form-grid">
+          <div className="form-group">
+            <input
+              type="text"
+              name="company"
+              placeholder="Company"
+              value={formData.company}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="text"
+              name="position"
+              placeholder="Position"
+              value={formData.position}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <select
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+            >
+              <option value="APPLIED">Applied</option>
+              <option value="INTERVIEW">Interview</option>
+              <option value="OFFER">Offer</option>
+              <option value="REJECTED">Rejected</option>
+              <option value="WITHDRAWN">Withdrawn</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <input
+              type="date"
+              name="dateApplied"
+              value={formData.dateApplied}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group notes-field">
+            <textarea
+              name="notes"
+              placeholder="Notes"
+              value={formData.notes}
+              onChange={handleChange}
+            />
+          </div>
+          </div>
+          <button className = "submit-button" type="submit">
+            {editingId ? 'Save Changes' : 'Add Application'}
+          </button>
       </form>
-
-    </div>
+    
+    </div >
+    
   )
 }
 

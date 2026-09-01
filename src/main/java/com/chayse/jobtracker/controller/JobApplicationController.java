@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import com.chayse.jobtracker.model.JobApplication;
 import com.chayse.jobtracker.service.JobApplicationService;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,26 +35,29 @@ public class JobApplicationController {
 
     @GetMapping
     public List<JobApplication> getApplications(
-        @RequestParam(required = false) JobStatus status,
-        @RequestParam(required = false) String company,
-        @RequestParam(required = false) String sort) {
+            @RequestParam(required = false) JobStatus status,
+            @RequestParam(required = false) String company,
+            @RequestParam(required = false) String sort) {
 
-    return service.getApplications(status, company, sort);
-}
+        return service.getApplications(status, company, sort);
+    }
 
     @PostMapping
     public JobApplication createApplication(
             @Valid @RequestBody JobApplication jobApplication) {
         return service.save(jobApplication);
     }
+
     @GetMapping("/{id}")
     public JobApplication getApplication(@PathVariable Long id) {
-    return service.findById(id);
-}
+        return service.findById(id);
+    }
+
     @DeleteMapping("/{id}")
     public void deleteApplication(@PathVariable Long id) {
         service.delete(id);
     }
+
     @PutMapping("/{id}")
     public JobApplication updateApplication(@PathVariable Long id, @Valid @RequestBody JobApplication jobApplication) {
         return service.update(id, jobApplication);

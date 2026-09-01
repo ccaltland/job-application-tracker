@@ -32,3 +32,11 @@ build/
 ### VS Code ###
 .vscode/
 .DS_Store
+
+# Environment variables
+.env
+.env.*
+
+# Frontend dependencies/build
+frontend/node_modules/
+frontend/dist/
