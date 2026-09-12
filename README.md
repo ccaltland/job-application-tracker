@@ -33,9 +33,49 @@ A full-stack web application for tracking and managing job applications. Users c
 - Spring MockMvc
 - H2 in-memory database
 
+### DevOps
+- Docker
+- Docker Compose
+
 ## Screenshot
 
 ![Job Application Tracker dashboard](screenshots/dashboard.png)
+
+## Running with Docker
+
+### Prerequisites
+
+- Docker Desktop
+
+### Setup
+
+Create a `.env` file in the project root based on `.env.example`:
+
+```env
+DB_PASSWORD=your_database_password
+```
+
+Start the application:
+
+```bash
+docker compose up --build
+```
+
+Once all services are running:
+
+- Frontend: `http://127.0.0.1:5173`
+- Backend API: `http://127.0.0.1:8080/applications`
+- PostgreSQL: `localhost:5433`
+
+To stop the application:
+
+```bash
+docker compose down
+```
+
+Application data is stored in a persistent Docker volume, so recreating the containers does not delete the PostgreSQL database.
+
+## Running Locally Without Docker
 
 ## Running Locally
 
@@ -83,7 +123,7 @@ npm install
 npm run dev
 ```
 
-The frontend will run at `http://localhost:5173`.
+The frontend will run at `http://127.0.0.1:5173`.
 
 ## API Endpoints
 
@@ -99,9 +139,10 @@ The frontend will run at `http://localhost:5173`.
 
 ## Future Improvements
 
-- Deploy the frontend, backend, and database
+- Deploy the containerized application
 - Add user authentication
 - Add dashboard statistics and application summaries
+- Add CI/CD with GitHub Actions
 
 ## Author
 
