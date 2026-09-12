@@ -77,8 +77,6 @@ Application data is stored in a persistent Docker volume, so recreating the cont
 
 ## Running Locally Without Docker
 
-## Running Locally
-
 ### Prerequisites
 
 Make sure you have installed:
