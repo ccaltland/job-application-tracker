@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+const API_URL = import.meta.env.VITE_API_URL;
 
 function App() {
   const [applications, setApplications] = useState([])
@@ -31,7 +32,7 @@ function App() {
       params.append('sort', sortOrder)
     }
 
-    const url = `http://localhost:8080/applications?${params.toString()}`
+    const url = `${API_URL}/applications?${params.toString()}`
 
     fetch(url)
       .then(response => response.json())
@@ -51,8 +52,8 @@ function App() {
   function handleSubmit(event) {
     event.preventDefault()
     const url = editingId
-      ? `http://localhost:8080/applications/${editingId}`
-      : 'http://localhost:8080/applications'
+      ? `${API_URL}/applications/${editingId}`
+      : `${API_URL}/applications`
 
     const method = editingId ? 'PUT' : 'POST'
 
@@ -98,7 +99,7 @@ function App() {
       })
   }
   function handleDelete(id) {
-    fetch(`http://localhost:8080/applications/${id}`, {
+    fetch(`${API_URL}/applications/${id}`, {
       method: 'DELETE'
     })
       .then(response => {
@@ -128,7 +129,7 @@ function App() {
   console.log(statusFilter)
 
   return (
-    <div classNAme="app">
+    <div className="app">
       <h1 className="page-title">Job Application Tracker</h1>
       <p className="subtitle">Track and manage your job search</p>
       <div className="filter-bar">
