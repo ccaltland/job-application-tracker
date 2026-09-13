@@ -4,9 +4,4 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  server: {
-    allowedHosts: [
-      'frontend-production-22bc8.up.railway.app'
-    ]
-  }
 })
