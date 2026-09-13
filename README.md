@@ -36,6 +36,15 @@ A full-stack web application for tracking and managing job applications. Users c
 ### DevOps
 - Docker
 - Docker Compose
+- GitHub Actions
+- Railway
+- Caddy
+
+## Live Demo
+
+[View the deployed application](https://frontend-production-22bc8.up.railway.app)
+
+> **Note:** This is a demonstration deployment. The application currently uses a shared database and does not include user authentication.
 
 ## Screenshot
 
@@ -123,6 +132,12 @@ npm run dev
 
 The frontend will run at `http://127.0.0.1:5173`.
 
+## CI/CD
+
+GitHub Actions automatically runs the backend test suite on pushes and pull requests. The CI environment uses an H2 in-memory database so tests run independently of the production PostgreSQL database.
+The application is deployed on Railway using separate frontend, backend, and PostgreSQL services. Railway waits for the GitHub Actions workflow to pass before deploying new changes.
+The production React frontend is built with Vite and served by Caddy.
+
 ## API Endpoints
 
 | Method | Endpoint | Description |
@@ -137,11 +152,11 @@ The frontend will run at `http://127.0.0.1:5173`.
 
 ## Future Improvements
 
-- Deploy the containerized application
 - Add user authentication
 - Add dashboard statistics and application summaries
-- Add CI/CD with GitHub Actions
+- Add additional filtering and search options
+- Expand automated test coverage
 
 ## Author
 
-Chayse Caltland
+Chayse Altland
