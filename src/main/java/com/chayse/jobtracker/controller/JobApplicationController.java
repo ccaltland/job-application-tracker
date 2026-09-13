@@ -26,7 +26,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @RequestMapping("/applications")
 @CrossOrigin(origins = {
     "http://localhost:5173",
-    "http://127.0.0.1:5173"
+    "http://127.0.0.1:5173",
+    "https://frontend-production-22bc8.up.railway.app"
 })
 public class JobApplicationController {
 
